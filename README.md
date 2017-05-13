@@ -1,7 +1,7 @@
 # Battery-Life
 This application alerts you when your battery is low on power on older and newer operating systems. I had to make this because starting from Windows 7, many systems stopped beeping when the battery was low. Also, at the time, not every system displayed the time left before you were out of battery, just the percentage. It's a simple feature that even on Windows 10 it can be super useful for laptop users.
 
-https://github.com/StevenJDH/Battery-Life
+Releases: https://github.com/StevenJDH/Battery-Life/releases
 
 Changelog: https://github.com/StevenJDH/Battery-Life/wiki/Changelog
 
