@@ -2,37 +2,43 @@
 Option Infer On
 
 Public Class FrmMain
-    Public Declare Sub keybd_event Lib "user32.dll" (ByVal bVk As Byte, ByVal bScan As Byte, ByVal dwFlags As Int32, ByVal dwExtraInfo As Int32)
 
-    Dim MySystemPowerStatus As System.Windows.Forms.PowerStatus = SystemInformation.PowerStatus
-    Dim nAlert As Integer = 0 '0=Both 1=MsgBox 2=Beep
-    Friend nTrigger As Integer = 10 'Percent at which to start alerts
+    Dim windowEffect As New SimulateKeyPress
+    Friend alertTriggerLevel As Integer = 10 'Percent at which to start alerts
+    Dim myBattery As New BatteryInfo
+    Dim batteryAlert As Integer = AlertType.MsgBoxAndBeep
+
+    Enum AlertType
+        MsgBoxAndBeep = 0
+        MsgBox = 1
+        Beep = 2
+    End Enum
 
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
         If RadioButton3.Checked = True Then
-            If Not nAlert = 0 Then
-                nAlert = 0
-                My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life", _
-                   "Alert", nAlert)
+            If Not batteryAlert = AlertType.MsgBoxAndBeep Then
+                batteryAlert = AlertType.MsgBoxAndBeep
+                My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life",
+                   "Alert", batteryAlert)
             End If
         ElseIf RadioButton2.Checked = True Then
-            If Not nAlert = 2 Then
-                nAlert = 2
-                My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life", _
-                   "Alert", nAlert)
+            If Not batteryAlert = AlertType.Beep Then
+                batteryAlert = AlertType.Beep
+                My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life",
+                   "Alert", batteryAlert)
             End If
         ElseIf RadioButton1.Checked = True Then
-            If Not nAlert = 1 Then
-                nAlert = 1
-                My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life", _
-                   "Alert", nAlert)
+            If Not batteryAlert = AlertType.MsgBox Then
+                batteryAlert = AlertType.MsgBox
+                My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life",
+                   "Alert", batteryAlert)
             End If
         End If
 
-        If Not nTrigger = NumericUpDown1.Value Then
-            nTrigger = NumericUpDown1.Value
-            My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life", _
-                "Trigger", nTrigger)
+        If Not alertTriggerLevel = NumericUpDown1.Value Then
+            alertTriggerLevel = NumericUpDown1.Value
+            My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life",
+                "Trigger", alertTriggerLevel)
         End If
         Me.Hide()
     End Sub
@@ -44,30 +50,30 @@ Public Class FrmMain
     Private Sub FrmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         If My.Computer.Registry.GetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life", "1run", Nothing) Is Nothing Then
             My.Computer.Registry.CurrentUser.CreateSubKey("Software\A Steve Creation\Battery Life")
-            My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life", _
+            My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life",
                     "1run", 1)
-            My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life", _
+            My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life",
                     "Alert", 0)
-            My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life", _
+            My.Computer.Registry.SetValue("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life",
                     "Trigger", 10)
             MsgBox("Looks like this is your first time using this program. The default settings will be used.", MsgBoxStyle.Information, "Battery Life")
             NotifyIcon1.Icon = Me.Icon
             NotifyIcon1.BalloonTipText = "Battery Life activated."
             NotifyIcon1.ShowBalloonTip(3000)
         Else
-            nAlert = My.Computer.Registry.GetValue _
+            batteryAlert = My.Computer.Registry.GetValue _
                 ("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life", "Alert", 0)
-            Select Case nAlert
-                Case 0
+            Select Case batteryAlert
+                Case AlertType.MsgBoxAndBeep
                     RadioButton3.Checked = True
-                Case 1
+                Case AlertType.MsgBox
                     RadioButton1.Checked = True
-                Case 2
+                Case AlertType.Beep
                     RadioButton2.Checked = True
             End Select
-            nTrigger = My.Computer.Registry.GetValue _
+            alertTriggerLevel = My.Computer.Registry.GetValue _
                 ("HKEY_CURRENT_USER\Software\A Steve Creation\Battery Life", "Trigger", 10)
-            NumericUpDown1.Value = nTrigger
+            NumericUpDown1.Value = alertTriggerLevel
             NotifyIcon1.Icon = Me.Icon
         End If
         Me.Hide()
@@ -75,41 +81,41 @@ Public Class FrmMain
 
     Private Sub Timer1_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Timer1.Tick
         ' if system does not have a battery there is no point in obtaining the battery values
-        If MySystemPowerStatus.BatteryChargeStatus = BatteryChargeStatus.NoSystemBattery Then
+        If myBattery.SystemPowerStatus.BatteryChargeStatus = BatteryChargeStatus.NoSystemBattery Then
             NotifyIcon1.Text = "No battery detected"
         Else
-            Select Case MySystemPowerStatus.PowerLineStatus
+            Select Case myBattery.SystemPowerStatus.PowerLineStatus
                 Case PowerLineStatus.Offline
-                    If MySystemPowerStatus.BatteryLifePercent > 100 Then
+                    If myBattery.SystemPowerStatus.BatteryLifePercent > 100 Then
                         NotifyIcon1.Text = "Still calculating..."
                     Else
-                        If GetBatTime() = "" Then
-                            NotifyIcon1.Text = GetBatPercent() & "% remaining"
+                        If myBattery.GetBatteryTimeRemaining() = "" Then
+                            NotifyIcon1.Text = myBattery.GetBatteryPercentage() & "% remaining"
                         Else
-                            NotifyIcon1.Text = GetBatTime() & "(" & GetBatPercent() & "%) remaining"
+                            NotifyIcon1.Text = myBattery.GetBatteryTimeRemaining() & $"({myBattery.GetBatteryPercentage()}%) remaining"
                         End If
-                        If nTrigger >= GetBatPercent() Then
-                            Select Case nAlert
-                                Case 0
+                        If alertTriggerLevel >= myBattery.GetBatteryPercentage() Then
+                            Select Case batteryAlert
+                                Case AlertType.MsgBoxAndBeep
                                     Console.Beep()
                                     If Timer1.Tag = "" Then
                                         Timer1.Tag = "1"
-                                        MinimizeAll()
+                                        windowEffect.MinimizeAll()
                                         Dim Frm As New FrmAlert
                                         Frm.ShowDialog()
                                         Frm.Dispose()
                                         Frm = Nothing
                                     End If
-                                Case 1
+                                Case AlertType.MsgBox
                                     If Timer1.Tag = "" Then
                                         Timer1.Tag = "1"
-                                        MinimizeAll()
+                                        windowEffect.MinimizeAll()
                                         Dim Frm As New FrmAlert
                                         Frm.ShowDialog()
                                         Frm.Dispose()
                                         Frm = Nothing
                                     End If
-                                Case 2
+                                Case AlertType.Beep
                                     Console.Beep()
                             End Select
                         End If
@@ -124,72 +130,6 @@ Public Class FrmMain
         End If
     End Sub
 
-    Private Function GetBatTime() As String
-        On Error Resume Next
-        Dim nSeconds As Integer
-        Dim iHours As Short = 0
-        Dim iMinutes As Short = 0
-        Dim iSeconds As Short = 0
-        ' get the approximate amount of battery time remaining.
-        If MySystemPowerStatus.BatteryLifeRemaining > 0 Then
-            nSeconds = MySystemPowerStatus.BatteryLifeRemaining
-            If nSeconds < 1 Then
-                Return ""
-            End If
-            iSeconds = nSeconds - Int(nSeconds / 60) * 60
-            iMinutes = Int((nSeconds - Int(nSeconds / 3600) * 3600) / 60)
-            iHours = Int(nSeconds / 3600)
-            If Int(iHours) > 24 Then
-                Return "Over a day left "
-            Else
-                If iHours < 1 Then
-                    If iMinutes < 1 Then
-                        Return CStr(iSeconds) & "s "
-                    Else
-                        Return CStr(iMinutes) & "m " & CStr(iSeconds) & "s "
-                    End If
-                Else
-                    Return CStr(iHours) & "h " & CStr(iMinutes) & "m " & CStr(iSeconds) & "s "
-                End If
-            End If
-        ElseIf MySystemPowerStatus.BatteryFullLifetime > 0 Then ' the full charge lifetime of the primary battery power source.
-            nSeconds = MySystemPowerStatus.BatteryFullLifetime
-            If nSeconds < 1 Then
-                Return ""
-            End If
-            iSeconds = nSeconds - Int(nSeconds / 60) * 60
-            iMinutes = Int((nSeconds - Int(nSeconds / 3600) * 3600) / 60)
-            iHours = Int(nSeconds / 3600)
-            If Int(iHours) > 24 Then
-                Return "Over a day left "
-            Else
-                If iHours < 1 Then
-                    If iMinutes < 1 Then
-                        Return CStr(iSeconds) & "s "
-                    Else
-                        Return CStr(iMinutes) & "m " & CStr(iSeconds) & "s "
-                    End If
-                Else
-                    Return CStr(iHours) & "h " & CStr(iMinutes) & "m " & CStr(iSeconds) & "s "
-                End If
-            End If
-        Else
-            ' if the battery is fully charged (ie. 1), what happens is that BatteryLifeRemaining returns 0.
-            ' I suspect it's a bug OR the battery needs to be discharged a little so the OS can estimate\
-            ' power use, and therefore the time the battery will provide for that given power use.
-            ' and for the second part, some systems (HP TC1100) will not provide the full charge lifetime of the battery.
-            Return ""
-        End If
-    End Function
-
-    Private Function GetBatPercent() As String
-        If MySystemPowerStatus.BatteryLifePercent > 100 Then
-            Return "Calculating percentage..."
-        Else
-            Return Math.Round(CDec(Replace(MySystemPowerStatus.BatteryLifePercent.ToString("p"), " %", "")), 0)
-        End If
-    End Function
-
     Private Sub NotifyIcon1_MouseDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles NotifyIcon1.MouseDoubleClick
         Me.Show()
         Me.WindowState = FormWindowState.Normal
@@ -199,21 +139,21 @@ Public Class FrmMain
     End Sub
 
     Private Sub TestToolStripMenuItem1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles TestToolStripMenuItem1.Click
-        Select Case nAlert
-            Case 0
+        Select Case batteryAlert
+            Case AlertType.MsgBoxAndBeep
                 Console.Beep()
-                MinimizeAll()
+                windowEffect.MinimizeAll()
                 Dim Frm As New FrmAlert
                 Frm.ShowDialog()
                 Frm.Dispose()
                 Frm = Nothing
-            Case 1
-                MinimizeAll()
+            Case AlertType.MsgBox
+                windowEffect.MinimizeAll()
                 Dim Frm As New FrmAlert
                 Frm.ShowDialog()
                 Frm.Dispose()
                 Frm = Nothing
-            Case 2
+            Case AlertType.Beep
                 Console.Beep()
         End Select
     End Sub
@@ -224,9 +164,9 @@ Public Class FrmMain
     End Sub
 
     Private Sub AboutToolStripMenuItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles AboutToolStripMenuItem.Click
-        MsgBox("Battery Life 1.0 (12/02/2010)" & vbNewLine & vbNewLine & "Author: Steven Jenkins De Haro" & _
-        vbNewLine & "A Steve Creation/Convergence" & vbNewLine & vbNewLine & _
-        "Microsoft .NET Framework 3.5", MsgBoxStyle.OkOnly, "Battery Life")
+        MsgBox("Battery Life 1.1 (03-Apr-2018)" & vbNewLine & vbNewLine & "Author: Steven Jenkins De Haro" &
+        vbNewLine & "A Steve Creation/Convergence" & vbNewLine & vbNewLine &
+        "Microsoft .NET Framework 4.6.1", MsgBoxStyle.OkOnly, "Battery Life")
     End Sub
 
     Private Sub SettingsToolStripMenuItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles SettingsToolStripMenuItem.Click
@@ -239,12 +179,6 @@ Public Class FrmMain
 
     Private Sub ExitToolStripMenuItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ExitToolStripMenuItem.Click
         Close()
-    End Sub
-
-    Public Sub MinimizeAll()
-        keybd_event(&H5B, 0, 0, 0)
-        keybd_event(&H4D, 0, 0, 0)
-        keybd_event(&H5B, 0, &H2, 0)
     End Sub
 
 End Class

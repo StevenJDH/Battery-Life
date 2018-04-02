@@ -9,7 +9,7 @@
         Me.Icon = FrmMain.Icon
         Timer1.Enabled = True
         Console.Beep(1000, 800)
-        Label1.Text = "Your battery has " & FrmMain.nTrigger & "% left. Please plug it in."
+        Label1.Text = "Your battery has " & FrmMain.alertTriggerLevel & "% left. Please plug it in."
     End Sub
 
     Private Sub Timer1_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Timer1.Tick

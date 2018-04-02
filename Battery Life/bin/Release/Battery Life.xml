@@ -22,5 +22,15 @@ Battery Life
   resource lookups using this strongly typed resource class.
 </summary>
 </member>
+<member name="P:Battery_Life.My.Resources.Resources._50_">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="M:Battery_Life.SimulateKeyPress.MinimizeAll">
+ <summary>
+ Minimizes all the windows on the desktop using the Windows key + M combination press.
+ </summary>
+</member>
 </members>
 </doc>

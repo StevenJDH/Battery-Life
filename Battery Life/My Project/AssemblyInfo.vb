@@ -11,14 +11,14 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("Battery Life")> 
 <Assembly: AssemblyDescription("Alerts you when your battery is low on power even on Vista or newer OSs.")> 
 <Assembly: AssemblyCompany("A Steve Creation/Convergence")> 
-<Assembly: AssemblyProduct("Battery Life")> 
-<Assembly: AssemblyCopyright("Copyright ©  2010")> 
+<Assembly: AssemblyProduct("Battery Life")>
+<Assembly: AssemblyCopyright("Copyright ©  2018")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("d9b4f2c0-8076-4790-b48e-a01df01d2f9e")> 
+<Assembly: Guid("d9b4f2c0-8076-4790-b48e-a01df01d2f9e")>
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.0")> 
-<Assembly: AssemblyFileVersion("1.0.0.0")> 
+<Assembly: AssemblyVersion("1.1.0.0")>
+<Assembly: AssemblyFileVersion("1.1.0.0")>
