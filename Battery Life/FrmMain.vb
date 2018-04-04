@@ -6,7 +6,8 @@ Public Class FrmMain
     Dim windowEffect As New SimulateKeyPress
     Friend alertTriggerLevel As Integer = 10 'Percent at which to start alerts
     Dim myBattery As New BatteryInfo
-    Dim batteryAlert As Integer = AlertType.MsgBoxAndBeep
+    Dim batteryAlert As AlertType = AlertType.MsgBoxAndBeep
+    Dim hasAlertFired As Boolean = False
 
     Enum AlertType
         MsgBoxAndBeep = 0
@@ -80,53 +81,37 @@ Public Class FrmMain
     End Sub
 
     Private Sub Timer1_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Timer1.Tick
-        ' if system does not have a battery there is no point in obtaining the battery values
-        If myBattery.SystemPowerStatus.BatteryChargeStatus = BatteryChargeStatus.NoSystemBattery Then
-            NotifyIcon1.Text = "No battery detected"
-        Else
-            Select Case myBattery.SystemPowerStatus.PowerLineStatus
-                Case PowerLineStatus.Offline
-                    If myBattery.SystemPowerStatus.BatteryLifePercent > 100 Then
-                        NotifyIcon1.Text = "Still calculating..."
-                    Else
-                        If myBattery.GetBatteryTimeRemaining() = "" Then
-                            NotifyIcon1.Text = myBattery.GetBatteryPercentage() & "% remaining"
-                        Else
-                            NotifyIcon1.Text = myBattery.GetBatteryTimeRemaining() & $"({myBattery.GetBatteryPercentage()}%) remaining"
-                        End If
-                        If alertTriggerLevel >= myBattery.GetBatteryPercentage() Then
-                            Select Case batteryAlert
-                                Case AlertType.MsgBoxAndBeep
-                                    Console.Beep()
-                                    If Timer1.Tag = "" Then
-                                        Timer1.Tag = "1"
-                                        windowEffect.MinimizeAll()
-                                        Dim Frm As New FrmAlert
-                                        Frm.ShowDialog()
-                                        Frm.Dispose()
-                                        Frm = Nothing
-                                    End If
-                                Case AlertType.MsgBox
-                                    If Timer1.Tag = "" Then
-                                        Timer1.Tag = "1"
-                                        windowEffect.MinimizeAll()
-                                        Dim Frm As New FrmAlert
-                                        Frm.ShowDialog()
-                                        Frm.Dispose()
-                                        Frm = Nothing
-                                    End If
-                                Case AlertType.Beep
-                                    Console.Beep()
-                            End Select
-                        End If
+        NotifyIcon1.Text = myBattery.GetBatteryStatus
+
+        If alertTriggerLevel >= myBattery.GetBatteryPercentage() Then
+            Select Case batteryAlert
+                Case AlertType.MsgBoxAndBeep
+                    Console.Beep()
+                    If hasAlertFired = False Then
+                        hasAlertFired = True
+                        windowEffect.MinimizeAll()
+                        Dim Frm As New FrmAlert
+                        Frm.ShowDialog()
+                        Frm.Dispose()
+                        Frm = Nothing
                     End If
-                Case PowerLineStatus.Online
-                    Timer1.Tag = ""
-                    NotifyIcon1.Text = "Plugged In"
-                Case PowerLineStatus.Unknown
-                    Timer1.Tag = ""
-                    NotifyIcon1.Text = "Status unknown"
+                Case AlertType.MsgBox
+                    If hasAlertFired = False Then
+                        hasAlertFired = True
+                        windowEffect.MinimizeAll()
+                        Dim Frm As New FrmAlert
+                        Frm.ShowDialog()
+                        Frm.Dispose()
+                        Frm = Nothing
+                    End If
+                Case AlertType.Beep
+                    Console.Beep()
             End Select
+        End If
+
+        'Resets our alert to be triggered again after a charge.
+        If myBattery.IsCharging = True Then
+            hasAlertFired = False
         End If
     End Sub
 
@@ -164,7 +149,7 @@ Public Class FrmMain
     End Sub
 
     Private Sub AboutToolStripMenuItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles AboutToolStripMenuItem.Click
-        MsgBox("Battery Life 1.1 (03-Apr-2018)" & vbNewLine & vbNewLine & "Author: Steven Jenkins De Haro" &
+        MsgBox("Battery Life 1.1 (04-Apr-2018)" & vbNewLine & vbNewLine & "Author: Steven Jenkins De Haro" &
         vbNewLine & "A Steve Creation/Convergence" & vbNewLine & vbNewLine &
         "Microsoft .NET Framework 4.6.1", MsgBoxStyle.OkOnly, "Battery Life")
     End Sub
