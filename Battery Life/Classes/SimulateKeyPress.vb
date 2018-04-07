@@ -8,7 +8,7 @@ Public Class SimulateKeyPress
     'This method is useful to simulate Key presses to the window with focus.
     <DllImport("user32.dll", CallingConvention:=CallingConvention.StdCall, CharSet:=CharSet.Unicode, EntryPoint:="keybd_event",
            ExactSpelling:=True, SetLastError:=True)>
-    Public Shared Sub keybd_event(ByVal bVk As Byte, ByVal bScan As Byte, ByVal dwFlags As Int32, ByVal dwExtraInfo As Int32)
+    Private Shared Sub keybd_event(ByVal bVk As Byte, ByVal bScan As Byte, ByVal dwFlags As Int32, ByVal dwExtraInfo As Int32)
     End Sub
 
     Private Const VK_STARTKEY = &H5B 'This is the hex character code for the start menu button.

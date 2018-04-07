@@ -5,6 +5,30 @@ Imports System.Management
 Imports System.Runtime.InteropServices
 
 Public Class BatteryInfo
+    'This method is used to get the extra battery details.
+    <DllImport("powrprof.dll", SetLastError:=True)>
+    Private Shared Function CallNtPowerInformation(InformationLevel As Int32, lpInputBuffer As IntPtr,
+                                                   nInputBufferSize As UInt32, lpOutputBuffer As IntPtr,
+                                                   nOutputBufferSize As UInt32) As UInt32
+    End Function
+    'This is used with powrprof.dll to get additional battery information.
+    Structure SYSTEM_BATTERY_STATE
+        Public AcOnLine As Byte
+        Public BatteryPresent As Byte
+        Public Charging As Byte
+        Public Discharging As Byte
+        Public spare1 As Byte
+        Public spare2 As Byte
+        Public spare3 As Byte
+        Public spare4 As Byte
+        Public MaxCapacity As UInt32
+        Public RemainingCapacity As UInt32
+        Public Rate As Int32
+        Public EstimatedTime As UInt32
+        Public DefaultAlert1 As UInt32
+        Public DefaultAlert2 As UInt32
+    End Structure
+
     Private systemPowerStatus As PowerStatus
     Private searcherWMIBatteryInfo As ManagementObjectSearcher
 
@@ -14,62 +38,28 @@ Public Class BatteryInfo
     End Sub
 
     Public Function GetBatteryTimeRemaining() As String
-        On Error Resume Next
+        Dim ts As TimeSpan
 
-        Dim nSeconds As Integer
-        Dim iHours As Short = 0
-        Dim iMinutes As Short = 0
-        Dim iSeconds As Short = 0
-
-        ' get the approximate amount of battery time remaining.
         If systemPowerStatus.BatteryLifeRemaining > 0 Then
-            nSeconds = systemPowerStatus.BatteryLifeRemaining
-            If nSeconds < 1 Then
-                Return ""
-            End If
-            iSeconds = nSeconds - Int(nSeconds / 60) * 60
-            iMinutes = Int((nSeconds - Int(nSeconds / 3600) * 3600) / 60)
-            iHours = Int(nSeconds / 3600)
-            If Int(iHours) > 24 Then
-                Return "Over a day left "
-            Else
-                If iHours < 1 Then
-                    If iMinutes < 1 Then
-                        Return CStr(iSeconds) & "s "
-                    Else
-                        Return CStr(iMinutes) & "m " & CStr(iSeconds) & "s "
-                    End If
-                Else
-                    Return CStr(iHours) & "h " & CStr(iMinutes) & "m " & CStr(iSeconds) & "s "
-                End If
-            End If
-        ElseIf systemPowerStatus.BatteryFullLifetime > 0 Then ' the full charge lifetime of the primary battery power source.
-            nSeconds = systemPowerStatus.BatteryFullLifetime
-            If nSeconds < 1 Then
-                Return ""
-            End If
-            iSeconds = nSeconds - Int(nSeconds / 60) * 60
-            iMinutes = Int((nSeconds - Int(nSeconds / 3600) * 3600) / 60)
-            iHours = Int(nSeconds / 3600)
-            If Int(iHours) > 24 Then
-                Return "Over a day left "
-            Else
-                If iHours < 1 Then
-                    If iMinutes < 1 Then
-                        Return CStr(iSeconds) & "s "
-                    Else
-                        Return CStr(iMinutes) & "m " & CStr(iSeconds) & "s "
-                    End If
-                Else
-                    Return CStr(iHours) & "h " & CStr(iMinutes) & "m " & CStr(iSeconds) & "s "
-                End If
-            End If
+            ts = New TimeSpan(0, 0, systemPowerStatus.BatteryLifeRemaining)
+        ElseIf systemPowerStatus.BatteryFullLifetime > 0 Then ' The full charge lifetime of the primary battery power source.
+            ts = New TimeSpan(0, 0, systemPowerStatus.BatteryFullLifetime)
         Else
-            ' if the battery is fully charged (ie. 1), what happens is that BatteryLifeRemaining returns 0.
+            ' If the battery is fully charged (ie. 1), what happens is that BatteryLifeRemaining returns 0.
             ' I suspect it's a bug OR the battery needs to be discharged a little so the OS can estimate\
             ' power use, and therefore the time the battery will provide for that given power use.
-            ' and for the second part, some systems (HP TC1100) will not provide the full charge lifetime of the battery.
+            ' And for the second part, some systems (HP TC1100) will not provide the full charge lifetime of the battery.
             Return ""
+        End If
+
+        If Int(ts.Days) > 0 Then
+            Return $"{ts.Days}d {ts.Hours}h {ts.Minutes}m {ts.Seconds}s "
+        ElseIf ts.Hours > 0 Then
+            Return $"{ts.Hours}h {ts.Minutes}m {ts.Seconds}s "
+        ElseIf ts.Minutes > 0 Then
+            Return $"{ts.Minutes}m {ts.Seconds}s "
+        Else
+            Return $"{ts.Seconds}s "
         End If
     End Function
 
@@ -97,6 +87,24 @@ Public Class BatteryInfo
             Return True
         End If
     End Function
+
+    'The current rate of charging/discharge of the battery, in mW. A nonzero, positive rate indicates charging; a negative rate 
+    'indicates discharging. Some batteries report only discharging rates. This value should be treated As a Long As it can 
+    'contain negative values (With the high bit Set).
+    Public Function Rate() As Long 'TODO: Finish writing this method.
+        Dim status As IntPtr = Marshal.AllocCoTaskMem(Marshal.SizeOf(GetType(SYSTEM_BATTERY_STATE)))
+        'The 5 is for POWER_INFORMATION_LEVEL code 0x5 (which should be the index for system battery state).
+        Dim retval As UInteger = CallNtPowerInformation(5, CType(Nothing, IntPtr), 0, status, CType(Marshal.SizeOf(GetType(SYSTEM_BATTERY_STATE)), UInt32))
+        Dim batteryStatus As SYSTEM_BATTERY_STATE = CType(Marshal.PtrToStructure(status, GetType(SYSTEM_BATTERY_STATE)), SYSTEM_BATTERY_STATE)
+
+
+        'Alternative way just to get the discharge rate:
+        'Dim powerCounter As New PerformanceCounter("Power Meter", "Power", "Power Meter (0)", True)
+        'Return powerCounter.NextValue().ToString()
+
+        Return batteryStatus.Rate.ToString()
+    End Function
+
 
     Public Function GetBatteryStatus() As String
         'If system does not have a battery there is no point in obtaining the battery values
@@ -133,8 +141,8 @@ Public Class BatteryInfo
         End Try
     End Function
 
-    'Gets the battery weak if supported
-    Public Function GetBatteryWear() As String
+    'Gets the battery wear if supported
+    Public Function GetBatteryWear() As String 'TODO: Replace this method with newer version that is always supported.
         If Not GetDesignCapacity() = 0 Then
             Return $"{Math.Round(GetFullChargeCapacity() / GetDesignCapacity() * 100, 0)}% of {GetDesignCapacity()}"
         Else
