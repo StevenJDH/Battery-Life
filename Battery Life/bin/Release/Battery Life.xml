@@ -27,6 +27,85 @@ Battery Life
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:Battery_Life.My.Resources.Resources.mini_icon">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="M:Battery_Life.BatteryInfo.GetBatteryTimeRemaining">
+ <summary>
+ Gets the remaining time on the battery before a charge will be needed.
+ </summary>
+ <returns>Remaining battery runtime</returns>
+</member>
+<member name="M:Battery_Life.BatteryInfo.HasBattery">
+ <summary>
+ Checks to see if the computers has a battery or not.
+ </summary>
+ <returns>Batter presence state</returns>
+</member>
+<member name="M:Battery_Life.BatteryInfo.IsCharging">
+ <summary>
+ Checks to see if the battery is charging or not.
+ </summary>
+ <returns>Charging status</returns>
+</member>
+<member name="M:Battery_Life.BatteryInfo.GetRate">
+ <summary>
+ The current rate of charging/discharge of the battery. A nonzero, positive rate indicates charging. A negative 
+ rate indicates discharging. Some batteries report only discharging rates.
+ </summary>
+ <returns>Charging/discharging rate in mW</returns>
+</member>
+<member name="M:Battery_Life.BatteryInfo.GetBatteryStatus">
+ <summary>
+ Gets a summary of the battery state such as percentage and time remaining if not still being calculated.
+ </summary>
+ <returns>Summary of battery state</returns>
+</member>
+<member name="M:Battery_Life.BatteryInfo.GetHealthStatus">
+ <summary>
+ Provides the health status of the battery.
+ </summary>
+ <returns>health status</returns>
+</member>
+<member name="M:Battery_Life.BatteryInfo.GetWear">
+ <summary>
+ Gets the battery's wear level percentage and the designed capacity.
+ </summary>
+ <returns>Wear information</returns>
+</member>
+<member name="M:Battery_Life.BatteryInfo.GetRemainingCapacity">
+ <summary>
+ The estimated remaining capacity of the battery.
+ </summary>
+ <returns>Remaining capacity of the battery in mWh</returns>
+</member>
+<member name="M:Battery_Life.BatteryInfo.GetCurrentMaxCapacity">
+ <summary>
+ The current theoretical max capacity of the battery. This is not the same as the design capacity.
+ </summary>
+ <returns>Max capacity of battery in mWh</returns>
+</member>
+<member name="M:Battery_Life.BatteryInfo.GetDesignCapacity">
+ <summary>
+ Gets the design capacity of the battery in milliwatt-hours.
+ </summary>
+ <returns>Design capacity</returns>
+</member>
+<member name="M:Battery_Life.BatteryInfo.GetCycleCount">
+ <summary>
+ Gets the number of charge/discharge cycles the battery has experienced. This provides a means to determine the 
+ battery's wear. If the battery does not support a cycle counter, this member is zero.
+ </summary>
+ <returns>Cycle count</returns>
+</member>
+<member name="M:Battery_Life.Win32Functions.GetSystemBatteryState">
+ <summary>
+ Provides additional battery information using unmanaged code.
+ </summary>
+ <returns>Object with access to battery information</returns>
+</member>
 <member name="M:Battery_Life.SimulateKeyPress.MinimizeAll">
  <summary>
  Minimizes all the windows on the desktop using the Windows key + M combination press.

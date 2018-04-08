@@ -1,15 +1,20 @@
 # Battery-Life
-This application alerts you when your battery is low on power on older and newer operating systems. I had to make this because starting from Windows 7, many systems stopped beeping when the battery was low. Also, at the time, not every system displayed the time left before you were out of battery, just the percentage. It's a simple feature that even on Windows 10 it can be super useful for laptop users.
+I was originally motivated to make this application because starting with Windows 7, many systems stopped beeping when the battery was low, and they did not always show the time remaining in addition to the percentage. Even with the release of Windows 10, I continued to find this application useful, although not as much as before. In response to this, I decided it was time to clean up the code and provide various pieces of useful information about the battery. For example, you can now see the charge and discharge rate to spot if something is draining your battery too fast or you can just check your battery’s wear level. I will continue to develop this application into a larger project as time permits since there is still a lot that can be done.
 
 Releases: https://github.com/StevenJDH/Battery-Life/releases
 
 Changelog: https://github.com/StevenJDH/Battery-Life/wiki/Changelog
 
 ## Features
-* Battery percentage and time left in the system tray.
-* Message alerts and beeping when the battery is low.
-* Some basic configuration to customize how you want the application to work.
-* Can minimize windows to ensure you don't miss the alert.
+* Percentage and time remaining
+* Current and max capacity in mWh
+* Charge and discharge rate in mW
+* Health status
+* Cycle count
+* Wear percentage compared against design capacity
+* Alert messages and beeping when the battery is low
+* Some basic configuration to customize how you want the application to work
+* Minimizes windows to ensure you don't miss the alert
 
 ## Why am I contributing?
 This is just one of many tools and applications I’ve created over the years for myself that I thought I should share with the public. I am new to GitHub so bear with me while I get adjusted. Hopefully, with community support, some of these applications will grow into something better.

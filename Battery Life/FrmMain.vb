@@ -83,7 +83,7 @@ Public Class FrmMain
     Private Sub Timer1_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Timer1.Tick
         NotifyIcon1.Text = myBattery.GetBatteryStatus
 
-        If alertTriggerLevel >= myBattery.GetBatteryPercentage() Then
+        If myBattery.IsCharging = False And alertTriggerLevel >= myBattery.GetBatteryPercentage() Then
             Select Case batteryAlert
                 Case AlertType.MsgBoxAndBeep
                     Console.Beep()
@@ -115,14 +115,6 @@ Public Class FrmMain
         End If
     End Sub
 
-    Private Sub NotifyIcon1_MouseDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles NotifyIcon1.MouseDoubleClick
-        Me.Show()
-        Me.WindowState = FormWindowState.Normal
-        'This is to bring it to front if already open but hidden behind other windows.
-        Me.TopMost = True
-        Me.TopMost = False
-    End Sub
-
     Private Sub TestToolStripMenuItem1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles TestToolStripMenuItem1.Click
         Select Case batteryAlert
             Case AlertType.MsgBoxAndBeep
@@ -149,7 +141,7 @@ Public Class FrmMain
     End Sub
 
     Private Sub AboutToolStripMenuItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles AboutToolStripMenuItem.Click
-        MsgBox("Battery Life 1.1 (04-Apr-2018)" & vbNewLine & vbNewLine & "Author: Steven Jenkins De Haro" &
+        MsgBox("Battery Life 2.0.0 Beta (08-Apr-2018)" & vbNewLine & vbNewLine & "Author: Steven Jenkins De Haro" &
         vbNewLine & "A Steve Creation/Convergence" & vbNewLine & vbNewLine &
         "Microsoft .NET Framework 4.6.1", MsgBoxStyle.OkOnly, "Battery Life")
     End Sub
@@ -164,6 +156,13 @@ Public Class FrmMain
 
     Private Sub ExitToolStripMenuItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ExitToolStripMenuItem.Click
         Close()
+    End Sub
+
+    Private Sub NotifyIcon1_MouseUp(sender As Object, e As MouseEventArgs) Handles NotifyIcon1.MouseUp
+        If e.Button = MouseButtons.Left Then
+            FrmPopUp.Show()
+            FrmPopUp.Activate() 'This is needed to stop the popup from getting stuck under certain conditions.
+        End If
     End Sub
 
 End Class
