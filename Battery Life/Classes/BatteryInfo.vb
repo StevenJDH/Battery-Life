@@ -144,7 +144,7 @@ Public Class BatteryInfo
     ''' </summary>
     ''' <returns>Wear information</returns>
     Public Function GetWear() As String
-        Dim design As Integer = GetDesignCapacity()
+        Dim design As Integer = GetDesignedCapacity()
         Dim current As Integer = GetCurrentMaxCapacity()
 
         Return $"{Math.Round(((design - current) / design) * 100, 0)}% of {design.ToString("N0")} mWh"
@@ -164,7 +164,7 @@ Public Class BatteryInfo
     End Function
 
     ''' <summary>
-    ''' The current theoretical max capacity of the battery. This is not the same as the design capacity.
+    ''' The current theoretical max capacity of the battery. This is not the same as the designed capacity.
     ''' </summary>
     ''' <returns>Max capacity of battery in mWh</returns>
     Public Function GetCurrentMaxCapacity() As UInteger
@@ -177,12 +177,12 @@ Public Class BatteryInfo
     End Function
 
     ''' <summary>
-    ''' Gets the design capacity of the battery in milliwatt-hours.
+    ''' Gets the designed capacity of the battery.
     ''' </summary>
-    ''' <returns>Design capacity</returns>
-    Public Function GetDesignCapacity() As Integer
+    ''' <returns>Designed capacity in mWh</returns>
+    Public Function GetDesignedCapacity() As Integer
         Try
-            Dim batteryStatus As Win32BatteryInformation = Win32Functions.GetBatteryInformation()
+            Dim batteryStatus As Win32BatteryExtra = Win32Functions.GetBatteryInformation()
 
             Return batteryStatus.DesignedCapacity
         Catch ex As Exception
@@ -197,7 +197,7 @@ Public Class BatteryInfo
     ''' <returns>Cycle count</returns>
     Public Function GetCycleCount() As Integer
         Try
-            Dim batteryStatus As Win32BatteryInformation = Win32Functions.GetBatteryInformation()
+            Dim batteryStatus As Win32BatteryExtra = Win32Functions.GetBatteryInformation()
 
             Return batteryStatus.CycleCount
         Catch ex As Exception

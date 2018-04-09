@@ -1,5 +1,5 @@
 ﻿'This class Exposes the properties for the Win32 BATTERY_INFORMATION and BATTERY_STATUS structures.
-Public Class Win32BatteryInformation
+Public Class Win32BatteryExtra
 
     'BATTERY_INFORMATION
     Public Property DesignedCapacity As Integer

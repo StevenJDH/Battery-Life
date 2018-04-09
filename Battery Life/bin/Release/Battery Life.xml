@@ -83,15 +83,15 @@ Battery Life
 </member>
 <member name="M:Battery_Life.BatteryInfo.GetCurrentMaxCapacity">
  <summary>
- The current theoretical max capacity of the battery. This is not the same as the design capacity.
+ The current theoretical max capacity of the battery. This is not the same as the designed capacity.
  </summary>
  <returns>Max capacity of battery in mWh</returns>
 </member>
-<member name="M:Battery_Life.BatteryInfo.GetDesignCapacity">
+<member name="M:Battery_Life.BatteryInfo.GetDesignedCapacity">
  <summary>
- Gets the design capacity of the battery in milliwatt-hours.
+ Gets the designed capacity of the battery.
  </summary>
- <returns>Design capacity</returns>
+ <returns>Designed capacity in mWh</returns>
 </member>
 <member name="M:Battery_Life.BatteryInfo.GetCycleCount">
  <summary>

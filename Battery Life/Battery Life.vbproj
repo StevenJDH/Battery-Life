@@ -74,7 +74,7 @@
   <ItemGroup>
     <Compile Include="Classes\BatteryInfo.vb" />
     <Compile Include="Classes\Win32.vb" />
-    <Compile Include="Classes\Win32BatteryInformation.vb" />
+    <Compile Include="Classes\Win32BatteryExtra.vb" />
     <Compile Include="Classes\Win32Functions.vb" />
     <Compile Include="Controls\VerticalProgressbar.Designer.vb">
       <DependentUpon>VerticalProgressbar.vb</DependentUpon>

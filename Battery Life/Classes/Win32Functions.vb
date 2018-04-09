@@ -38,7 +38,7 @@ Public NotInheritable Class Win32Functions
     '----------------------------------------------------------------------------------------------------------------
 
 
-    Public Shared Function GetBatteryInformation() As Win32BatteryInformation
+    Public Shared Function GetBatteryInformation() As Win32BatteryExtra
         Dim deviceDataPointer As IntPtr = IntPtr.Zero
         Dim queryInfoPointer As IntPtr = IntPtr.Zero
         Dim batteryInfoPointer As IntPtr = IntPtr.Zero
@@ -57,7 +57,7 @@ Public NotInheritable Class Win32Functions
             'Win32.SP_DEVICE_INTERFACE_DETAIL_DATA deviceDetailData =
             '    (Win32.SP_DEVICE_INTERFACE_DETAIL_DATA)Marshal.PtrToStructure(deviceDataPointer, typeof(Win32.SP_DEVICE_INTERFACE_DETAIL_DATA));
 
-            'toggle these two and see if naything changes... ^^^^^^^^^^^^
+            'toggle these two and see if anything changes... ^^^^^^^^^^^^
             Dim deviceDetailData As New Win32.SP_DEVICE_INTERFACE_DETAIL_DATA()
             deviceDetailData.CbSize = If((IntPtr.Size = 8), 8, 4 + Marshal.SystemDefaultCharSize)
 
@@ -106,7 +106,7 @@ Public NotInheritable Class Win32Functions
             Win32.SetupDiDestroyDeviceInfoList(deviceHandle)
 
 
-            Return New Win32BatteryInformation() With {
+            Return New Win32BatteryExtra() With {
                 .DesignedCapacity = updatedBatteryInformation.DesignedCapacity,
                 .FullChargeCapacity = updatedBatteryInformation.FullChargedCapacity,
                 .CycleCount = updatedBatteryInformation.CycleCount,
@@ -162,7 +162,7 @@ Public NotInheritable Class Win32Functions
     Private Shared Function SetupDiGetClassDevs(guid As Guid, flags As Win32.DEVICE_GET_CLASS_FLAGS) As IntPtr
         Dim handle As IntPtr = Win32.SetupDiGetClassDevs(guid, Nothing, IntPtr.Zero, flags)
 
-        If handle = IntPtr.Zero OrElse handle.ToInt32() = -1 Then
+        If handle = IntPtr.Zero OrElse handle.ToInt64() = -1 Then
             Dim errorCode As Integer = Marshal.GetLastWin32Error()
             If errorCode <> 0 Then
                 Throw Marshal.GetExceptionForHR(errorCode)
