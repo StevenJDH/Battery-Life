@@ -1,4 +1,4 @@
-# Battery-Life
+# Battery Life
 I was originally motivated to make this application because starting with Windows 7, many systems stopped beeping when the battery was low, and they did not always show the time remaining in addition to the percentage. Even with the release of Windows 10, I continued to find this application useful, although not as much as before. In response to this, I decided it was time to clean up the code and provide various pieces of useful information about the battery. For example, you can now see the charge and discharge rate to spot if something is draining your battery too fast or you can just check your battery’s wear level. I will continue to develop this application into a larger project as time permits since there is still a lot that can be done.
 
 Releases: [https://github.com/StevenJDH/Battery-Life/releases](https://github.com/StevenJDH/Battery-Life/releases)
