@@ -3,9 +3,9 @@
     Private pValue As Single = 0
     Public ReadOnly Property Max As Integer = 100
 
-    Public Sub Increment(value As Integer)
+    Public Sub Increment(value As Single)
         'TODO: create exception handler.
-        Dim progress As Integer
+        Dim progress As Single
 
         progress = value + pValue
 

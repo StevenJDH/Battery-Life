@@ -10,14 +10,17 @@ Public Class FrmPopUp
         End If
         Me.Location = New Point(x, y)
 
-        'TODO: Test code. 
+        RefreshInfo()
+    End Sub
+
+    Private Sub RefreshInfo()
+        'TODO: Fully test code.
         Dim myBattery As New BatteryInfo
-        Dim percent As Integer
-        'TODO: Improve return value logic.
-        If Integer.TryParse(myBattery.GetBatteryPercentage, percent) = True Then
-            VerticalProgressbar1.Increment(percent)
-            lblPercentage.Text = $"{percent}%"
-        End If
+        Dim percent As Single = myBattery.GetBatteryPercentage()
+
+        VerticalProgressbar1.Increment(percent)
+        lblPercentage.Text = $"{percent}%"
+
         lblCapacity.Text = $"{myBattery.GetRemainingCapacity.ToString("N0")} mWh of {myBattery.GetCurrentMaxCapacity.ToString("N0")} mWh"
         If myBattery.IsCharging = True Then
             lblDischargeCharge.Text = "Charge Rate:"
@@ -25,12 +28,23 @@ Public Class FrmPopUp
             VerticalProgressbar1.SetChargingColor(True)
         Else
             lblDischargeCharge.Text = "Discharge Rate:"
-            lblTimeRemaining.Text = myBattery.GetBatteryTimeRemaining
+            Dim timeRemaning As String = myBattery.GetBatteryTimeRemaining
+            If timeRemaning = "" Then
+                lblTimeRemaining.Text = "Calculating"
+            Else
+                lblTimeRemaining.Text = timeRemaning
+            End If
             VerticalProgressbar1.SetChargingColor(False)
         End If
-        lblRate.Text = $"{myBattery.GetRate.ToString("N0")} mW"
+
+        Dim rate As Integer = myBattery.GetRate
+        lblRate.Text = If(Not rate = 0, $"{rate.ToString("N0")} mW", "Not supported")
+
         lblHealthStatus.Text = myBattery.GetHealthStatus
-        lblCycles.Text = myBattery.GetCycleCount
+
+        Dim cycleCount As Integer = myBattery.GetCycleCount
+        lblCycles.Text = If(Not cycleCount = 0, cycleCount, "Not supported")
+
         lblWear.Text = myBattery.GetWear
     End Sub
 

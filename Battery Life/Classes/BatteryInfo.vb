@@ -3,31 +3,60 @@ Option Infer On
 
 Imports System.Management
 Imports System.Runtime.InteropServices
+Imports Microsoft.Win32
 
 Public Class BatteryInfo
 
     Private systemPowerStatus As PowerStatus
     Private searcherWMIBatteryInfo As ManagementObjectSearcher
+    Private stopWatch As Stopwatch
+    Private fullRuntime As TimeSpan
+    Private sincePercent As Single
 
     Public Sub New()
         systemPowerStatus = SystemInformation.PowerStatus
         searcherWMIBatteryInfo = New ManagementObjectSearcher("Select * FROM Win32_Battery")
+        stopWatch = New Stopwatch()
+        fullRuntime = New TimeSpan(0, 0, GetBatterySecondsRemaining())
+        sincePercent = GetBatteryPercentage()
+        stopWatch.Start()
+
+        AddHandler SystemEvents.PowerModeChanged, New PowerModeChangedEventHandler(AddressOf SystemEvents_PowerModeChanged)
     End Sub
 
     ''' <summary>
-    ''' Gets the remaining time on the battery before a charge will be needed.
+    ''' Gets the formated remaining time on the battery before a charge will be needed.
     ''' </summary>
     ''' <returns>Remaining battery runtime</returns>
     Public Function GetBatteryTimeRemaining() As String
-        If systemPowerStatus.BatteryLifeRemaining > 0 Then
-            Return GetTimeFromSeconds(systemPowerStatus.BatteryLifeRemaining)
+        Dim seconds As Integer = GetBatterySecondsRemaining()
+
+        If Not seconds = -1 Then
+            Return GetTimeFromSeconds(seconds)
         Else
             Return ""
         End If
     End Function
 
+    ''' <summary>
+    ''' Gets the remaining seconds on the battery before a charge will be needed.
+    ''' </summary>
+    ''' <returns>Remaining battery runtime in seconds</returns>
+    Public Function GetBatterySecondsRemaining() As Integer
+        If systemPowerStatus.BatteryLifeRemaining > 0 Then
+            Return systemPowerStatus.BatteryLifeRemaining
+        Else
+            Return -1
+        End If
+    End Function
+
     'Issue with this is that it is returning -1
+    'The system is only capable of estimating BatteryFullLifeTime based on calculations on BatteryLifeTime and BatteryLifePercent. 
+    'Without smart battery subsystems, this value may Not be accurate enough To be useful.
     Public Function GetFullRuntime() As String 'TODO: Replace this method with newer version that is always supported.
+        'Maybe just check to see if not charging and save the time remaining and the percent as a baseline for our full 
+        'life. The Change power event would be good for this. Make sure to fire this once on load. Use a TimeSpane to get the
+        'Elapsed Time where the save percent can also be shown.
         If systemPowerStatus.BatteryFullLifetime > 0 Then ' The full charge lifetime of the primary battery power source.
             Return GetTimeFromSeconds(systemPowerStatus.BatteryFullLifetime)
         Else
@@ -35,26 +64,60 @@ Public Class BatteryInfo
         End If
     End Function
 
+    'TODO: finish writing this.
+    Public Function GetElapsedTime() As String
+
+        'stopWatch.Stop()
+
+        Dim ts As TimeSpan = stopWatch.Elapsed
+        Return $"{ts.ToString("h:mm")} (since {sincePercent})%)"
+
+
+        'stopWatch.Reset() 'There is also restart.
+    End Function
+
+    Private Sub SystemEvents_PowerModeChanged(sender As Object, e As PowerModeChangedEventArgs)
+        'Indicates that another type of power status change has occurred. This power mode is indicated 
+        'when the battery enters a critical state or when switching between A/C power and battery power.
+        If e.Mode = PowerModes.StatusChange Then 'TODO: this method will updated the elapse time from percentage when finished
+            MsgBox("power state changed") 'test code to remove.
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Provides a formated duration with estimated target time.
+    ''' </summary>
+    ''' <param name="seconds">Time in seconds</param>
+    ''' <returns>Duration with target time estimate</returns>
     Private Function GetTimeFromSeconds(seconds As Integer) As String
         Dim ts As TimeSpan
+        Dim currentTime As DateTime
+        Dim targetTime As DateTime
 
         ts = New TimeSpan(0, 0, seconds)
+        currentTime = DateTime.Now
+        targetTime = currentTime.Add(ts)
+
         If Int(ts.Days) > 0 Then
-            Return $"{ts.Days}d {ts.Hours}h {ts.Minutes}m {ts.Seconds}s "
+            Return $"{ts.Days}d {ts.Hours}h {ts.Minutes}m {ts.Seconds}s @ {targetTime.ToString("h:mm tt")} "
         ElseIf ts.Hours > 0 Then
-            Return $"{ts.Hours}h {ts.Minutes}m {ts.Seconds}s "
+            Return $"{ts.Hours}h {ts.Minutes}m {ts.Seconds}s @ {targetTime.ToString("h:mm tt")} "
         ElseIf ts.Minutes > 0 Then
-            Return $"{ts.Minutes}m {ts.Seconds}s "
+            Return $"{ts.Minutes}m {ts.Seconds}s @ {targetTime.ToString("h:mm tt")} "
         Else
-            Return $"{ts.Seconds}s "
+            Return $"{ts.Seconds}s @ {targetTime.ToString("h:mm tt")} "
         End If
     End Function
 
-    Public Function GetBatteryPercentage() As String
+    ''' <summary>
+    ''' Gets the percentage of remaining battery life.
+    ''' </summary>
+    ''' <returns>Battery life percentage</returns>
+    Public Function GetBatteryPercentage() As Single
         If systemPowerStatus.BatteryLifePercent > 1.0F Then
-            Return "Calculating percentage..."
+            Return -1
         Else
-            Return Math.Round(systemPowerStatus.BatteryLifePercent * 100.0F, 0)
+            Return Math.Round(systemPowerStatus.BatteryLifePercent * 100.0F, 1)
         End If
     End Function
 
@@ -91,6 +154,7 @@ Public Class BatteryInfo
     Public Function GetRate() As Integer
         Try
             Dim batteryStatus As Win32.SYSTEM_BATTERY_STATE = Win32Functions.GetSystemBatteryState()
+
             Return batteryStatus.Rate.ToString()
         Catch ex As Exception
             Return 0
@@ -112,9 +176,9 @@ Public Class BatteryInfo
                 If systemPowerStatus.BatteryLifePercent > 1.0F Then
                     Return "Still calculating..."
                 ElseIf GetBatteryTimeRemaining() = "" Then
-                    Return GetBatteryPercentage() & "% remaining"
+                    Return $"{GetBatteryPercentage()}% remaining"
                 Else
-                    Return GetBatteryTimeRemaining() & $"({GetBatteryPercentage()}%) remaining"
+                    Return $"{GetBatteryTimeRemaining()}({GetBatteryPercentage()}%) remaining"
                 End If
             Case PowerLineStatus.Online
                 Return "Plugged in"
@@ -157,6 +221,7 @@ Public Class BatteryInfo
     Public Function GetRemainingCapacity() As UInteger
         Try
             Dim batteryStatus As Win32.SYSTEM_BATTERY_STATE = Win32Functions.GetSystemBatteryState()
+
             Return batteryStatus.RemainingCapacity
         Catch ex As Exception
             Return 0
@@ -170,6 +235,7 @@ Public Class BatteryInfo
     Public Function GetCurrentMaxCapacity() As UInteger
         Try
             Dim batteryStatus As Win32.SYSTEM_BATTERY_STATE = Win32Functions.GetSystemBatteryState()
+
             Return batteryStatus.MaxCapacity
         Catch ex As Exception
             Return 0
@@ -205,13 +271,4 @@ Public Class BatteryInfo
         End Try
     End Function
 
-    'Remaining time to charge the battery fully in minutes at the current charging rate and usage. Return type uint32.
-    'If the Property Is Not supported, return -1. 
-    Public Function GetTimeToFullCharge() As Integer 'TODO: Replace this method with newer version that is always supported.
-        Try
-            Return searcherWMIBatteryInfo.Get(0)("TimeToFullCharge").ToString()
-        Catch ex As Exception
-            Return -1 'Can trigger if the program is sandboxed by a firewall.
-        End Try
-    End Function
 End Class
