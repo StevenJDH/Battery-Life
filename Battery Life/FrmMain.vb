@@ -77,13 +77,14 @@ Public Class FrmMain
             NumericUpDown1.Value = alertTriggerLevel
             NotifyIcon1.Icon = Me.Icon
         End If
+
         Me.Hide()
     End Sub
 
     Private Sub Timer1_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Timer1.Tick
         NotifyIcon1.Text = myBattery.GetBatteryStatus
 
-        If myBattery.IsCharging = False And alertTriggerLevel >= myBattery.GetBatteryPercentage() Then
+        If myBattery.IsCharging = False AndAlso alertTriggerLevel >= myBattery.GetBatteryPercentage() Then
             Select Case batteryAlert
                 Case AlertType.MsgBoxAndBeep
                     Console.Beep()
@@ -141,7 +142,7 @@ Public Class FrmMain
     End Sub
 
     Private Sub AboutToolStripMenuItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles AboutToolStripMenuItem.Click
-        MsgBox("Battery Life 2.0.0 Beta (08-Apr-2018)" & vbNewLine & vbNewLine & "Author: Steven Jenkins De Haro" &
+        MsgBox("Battery Life 2.0.0 Beta (06-Aug-2018)" & vbNewLine & vbNewLine & "Author: Steven Jenkins De Haro" &
         vbNewLine & "A Steve Creation/Convergence" & vbNewLine & vbNewLine &
         "Microsoft .NET Framework 4.6.1", MsgBoxStyle.OkOnly, "Battery Life")
     End Sub
