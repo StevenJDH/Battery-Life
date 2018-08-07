@@ -25,8 +25,8 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("Battery Life")> 
-<Assembly: AssemblyDescription("Alerts you when your battery is low on power even on Vista or newer OSs.")> 
-<Assembly: AssemblyCompany("A Steve Creation/Convergence")> 
+<Assembly: AssemblyDescription("Alerts you when your battery is low on power even on Vista or newer OSs.")>
+<Assembly: AssemblyCompany("Steven Jenkins De Haro")>
 <Assembly: AssemblyProduct("Battery Life")>
 <Assembly: AssemblyCopyright("Copyright ©  2018")>
 <Assembly: AssemblyTrademark("")> 

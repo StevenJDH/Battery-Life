@@ -154,13 +154,13 @@ Public Class FrmMain
 
     Private Sub Donate5PaypalToolStripMenuItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Donate5PaypalToolStripMenuItem.Click
         On Error Resume Next
-        Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8493677")
+        Process.Start("https://www.paypal.me/stevenjdh/5")
     End Sub
 
     Private Sub AboutToolStripMenuItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles AboutToolStripMenuItem.Click
-        MsgBox("Battery Life 2.0.0 Beta (06-Aug-2018)" & vbNewLine & vbNewLine & "Author: Steven Jenkins De Haro" &
-        vbNewLine & "A Steve Creation/Convergence" & vbNewLine & vbNewLine &
-        "Microsoft .NET Framework 4.6.1", MsgBoxStyle.OkOnly, "Battery Life")
+        Using frm As New FrmAbout
+            frm.ShowDialog()
+        End Using
     End Sub
 
     Private Sub SettingsToolStripMenuItem_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles SettingsToolStripMenuItem.Click
@@ -176,10 +176,14 @@ Public Class FrmMain
     End Sub
 
     Private Sub NotifyIcon1_MouseUp(sender As Object, e As MouseEventArgs) Handles NotifyIcon1.MouseUp
-        If e.Button = MouseButtons.Left Then
-            FrmPopUp.Show()
-            FrmPopUp.Activate() 'This is needed to stop the popup from getting stuck under certain conditions.
-        End If
+        Try
+            If e.Button = MouseButtons.Left Then
+                FrmPopUp.Show()
+                FrmPopUp.Activate() 'This is needed to stop the popup from getting stuck under certain conditions.
+            End If
+        Catch ex As ObjectDisposedException
+            'Consuming this exception which only comes up under rare conditions flipping between popup menu and battery details.
+        End Try
     End Sub
 
 End Class

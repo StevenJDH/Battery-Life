@@ -82,6 +82,12 @@
     <Compile Include="Controls\VerticalProgressbar.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="FrmAbout.Designer.vb">
+      <DependentUpon>FrmAbout.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FrmAbout.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FrmPopUp.Designer.vb">
       <DependentUpon>FrmPopUp.vb</DependentUpon>
     </Compile>
@@ -117,11 +123,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Settings.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\VerticalProgressbar.resx">
       <DependentUpon>VerticalProgressbar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmAbout.resx">
+      <DependentUpon>FrmAbout.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmPopUp.resx">
       <DependentUpon>FrmPopUp.vb</DependentUpon>
@@ -153,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\donation-button.png" />
     <None Include="Resources\mini icon.ico" />
     <None Include="Resources\50%25.ico" />
   </ItemGroup>
