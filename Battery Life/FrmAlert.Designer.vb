@@ -38,11 +38,13 @@ Partial Class FrmAlert
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.Timer1 = New System.Windows.Forms.Timer()
+        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Button1
@@ -101,11 +103,14 @@ Partial Class FrmAlert
         Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.Button1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "FrmAlert"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Battery Life - Alert"
         Me.TopMost = True
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
