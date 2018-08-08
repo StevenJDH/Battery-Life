@@ -29,7 +29,7 @@ Public Class FrmPopUp
 
     Private Sub RefreshInfo()
         'TODO: Fully test code.
-        Dim myBattery As New BatteryInfo
+        Dim myBattery As BatteryInfo = BatteryInfo.Instance
         Dim percent As Single = myBattery.GetBatteryPercentage()
 
         VerticalProgressbar1.Increment(percent)

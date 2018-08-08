@@ -28,8 +28,19 @@ Public Class BatteryInfo
     Private stopWatch As Stopwatch
     Private fullRuntime As TimeSpan
     Private sincePercent As Single
+    Private Shared fInstance As BatteryInfo = Nothing
 
-    Public Sub New()
+    Public Shared ReadOnly Property Instance()
+        Get
+            If (fInstance Is Nothing) Then
+                fInstance = New BatteryInfo() 'Singleton pattern
+            End If
+
+            Return fInstance
+        End Get
+    End Property
+
+    Private Sub New()
         systemPowerStatus = SystemInformation.PowerStatus
         searcherWMIBatteryInfo = New ManagementObjectSearcher("Select * FROM Win32_Battery")
         stopWatch = New Stopwatch()

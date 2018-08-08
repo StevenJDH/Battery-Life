@@ -21,7 +21,7 @@ Public Class FrmMain
 
     Dim windowEffect As New SimulateKeyPress
     Friend alertTriggerLevel As Integer = 10 'Percent at which to start alerts
-    Dim myBattery As New BatteryInfo
+    Dim myBattery As BatteryInfo = BatteryInfo.Instance
     Dim batteryAlert As AlertType = AlertType.MsgBoxAndBeep
     Dim hasAlertFired As Boolean = False
 
