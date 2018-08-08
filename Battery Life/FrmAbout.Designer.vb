@@ -136,7 +136,7 @@ Partial Class FrmAbout
         '
         'lnkGitHub
         '
-        Me.lnkGitHub.Location = New System.Drawing.Point(200, 88)
+        Me.lnkGitHub.Location = New System.Drawing.Point(224, 88)
         Me.lnkGitHub.Name = "lnkGitHub"
         Me.lnkGitHub.Size = New System.Drawing.Size(232, 16)
         Me.lnkGitHub.TabIndex = 13
@@ -147,9 +147,9 @@ Partial Class FrmAbout
         '
         Me.label4.Location = New System.Drawing.Point(8, 88)
         Me.label4.Name = "label4"
-        Me.label4.Size = New System.Drawing.Size(200, 20)
+        Me.label4.Size = New System.Drawing.Size(224, 20)
         Me.label4.TabIndex = 12
-        Me.label4.Text = "C# source code is available on GitHub: "
+        Me.label4.Text = "VB.NET source code is available on GitHub: "
         '
         'FrmAbout
         '

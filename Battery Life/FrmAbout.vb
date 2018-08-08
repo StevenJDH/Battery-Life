@@ -26,18 +26,18 @@ Public Class FrmAbout
         lblButton.BackColor = Color.Transparent
     End Sub
 
-    Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
+    Private Sub BtnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
         Me.Close()
     End Sub
 
-    Private Sub lblButton_Click(sender As Object, e As EventArgs) Handles lblButton.Click
+    Private Sub LblButton_Click(sender As Object, e As EventArgs) Handles lblButton.Click
         On Error Resume Next
         ' Sends URL to the operating system for opening.
         Process.Start("https://www.paypal.me/stevenjdh")
     End Sub
 
-    Private Sub pnlButtonImage_Click(sender As Object, e As EventArgs) Handles pnlButtonImage.Click
-        lblButton_Click(Me, EventArgs.Empty)
+    Private Sub PnlButtonImage_Click(sender As Object, e As EventArgs) Handles pnlButtonImage.Click
+        LblButton_Click(Me, EventArgs.Empty)
     End Sub
 
     Private Sub FrmAbout_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -50,7 +50,7 @@ Public Class FrmAbout
         lnkGitHub.Links.Add(New LinkLabel.Link() With {.LinkData = "https://github.com/StevenJDH/Battery-Life"})
     End Sub
 
-    Private Sub lnkGitHub_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkGitHub.LinkClicked
+    Private Sub LnkGitHub_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkGitHub.LinkClicked
         On Error Resume Next
         ' Casts URL back to string and sends it to the operating system for opening.
         Process.Start(e.Link.LinkData.ToString())
