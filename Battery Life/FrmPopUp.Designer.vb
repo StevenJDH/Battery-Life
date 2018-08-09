@@ -55,6 +55,8 @@ Partial Class FrmPopUp
         Me.VerticalProgressbar1 = New Battery_Life.VerticalProgressbar()
         Me.lblCycles = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
+        Me.lblElapsedTime = New System.Windows.Forms.Label()
+        Me.Label9 = New System.Windows.Forms.Label()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -126,7 +128,7 @@ Partial Class FrmPopUp
         'Label6
         '
         Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.Location = New System.Drawing.Point(48, 120)
+        Me.Label6.Location = New System.Drawing.Point(48, 136)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(120, 16)
         Me.Label6.TabIndex = 12
@@ -135,7 +137,7 @@ Partial Class FrmPopUp
         'Label7
         '
         Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(48, 152)
+        Me.Label7.Location = New System.Drawing.Point(48, 168)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(120, 16)
         Me.Label7.TabIndex = 13
@@ -171,7 +173,7 @@ Partial Class FrmPopUp
         'lblHealthStatus
         '
         Me.lblHealthStatus.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblHealthStatus.Location = New System.Drawing.Point(168, 120)
+        Me.lblHealthStatus.Location = New System.Drawing.Point(168, 136)
         Me.lblHealthStatus.Name = "lblHealthStatus"
         Me.lblHealthStatus.Size = New System.Drawing.Size(176, 16)
         Me.lblHealthStatus.TabIndex = 17
@@ -180,7 +182,7 @@ Partial Class FrmPopUp
         'lblWear
         '
         Me.lblWear.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblWear.Location = New System.Drawing.Point(168, 152)
+        Me.lblWear.Location = New System.Drawing.Point(168, 168)
         Me.lblWear.Name = "lblWear"
         Me.lblWear.Size = New System.Drawing.Size(176, 16)
         Me.lblWear.TabIndex = 18
@@ -190,13 +192,13 @@ Partial Class FrmPopUp
         '
         Me.VerticalProgressbar1.Location = New System.Drawing.Point(16, 16)
         Me.VerticalProgressbar1.Name = "VerticalProgressbar1"
-        Me.VerticalProgressbar1.Size = New System.Drawing.Size(24, 152)
+        Me.VerticalProgressbar1.Size = New System.Drawing.Size(24, 168)
         Me.VerticalProgressbar1.TabIndex = 4
         '
         'lblCycles
         '
         Me.lblCycles.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCycles.Location = New System.Drawing.Point(168, 136)
+        Me.lblCycles.Location = New System.Drawing.Point(168, 152)
         Me.lblCycles.Name = "lblCycles"
         Me.lblCycles.Size = New System.Drawing.Size(176, 16)
         Me.lblCycles.TabIndex = 20
@@ -205,17 +207,37 @@ Partial Class FrmPopUp
         'Label8
         '
         Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(48, 136)
+        Me.Label8.Location = New System.Drawing.Point(48, 152)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(120, 16)
         Me.Label8.TabIndex = 19
         Me.Label8.Text = "Cycle Count:"
         '
+        'lblElapsedTime
+        '
+        Me.lblElapsedTime.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblElapsedTime.Location = New System.Drawing.Point(168, 120)
+        Me.lblElapsedTime.Name = "lblElapsedTime"
+        Me.lblElapsedTime.Size = New System.Drawing.Size(176, 16)
+        Me.lblElapsedTime.TabIndex = 22
+        Me.lblElapsedTime.Text = "0"
+        '
+        'Label9
+        '
+        Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label9.Location = New System.Drawing.Point(48, 120)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(120, 16)
+        Me.Label9.TabIndex = 21
+        Me.Label9.Text = "Elapsed Time:"
+        '
         'FrmPopUp
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(353, 185)
+        Me.ClientSize = New System.Drawing.Size(353, 201)
+        Me.Controls.Add(Me.lblElapsedTime)
+        Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.lblCycles)
         Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.lblWear)
@@ -260,4 +282,6 @@ Partial Class FrmPopUp
     Friend WithEvents lblWear As Label
     Friend WithEvents lblCycles As Label
     Friend WithEvents Label8 As Label
+    Friend WithEvents lblElapsedTime As Label
+    Friend WithEvents Label9 As Label
 End Class

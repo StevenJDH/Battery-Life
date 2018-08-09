@@ -91,23 +91,28 @@ Public Class BatteryInfo
         End If
     End Function
 
-    'TODO: finish writing this.
+    ''' <summary>
+    ''' Gets the elapsed time since a particular percentage after switching between the charging or the 
+    ''' discharging of the battery, or the loading of the application.
+    ''' </summary>
+    ''' <returns>Elapsed time from what percent</returns>
     Public Function GetElapsedTime() As String
-
-        'stopWatch.Stop()
-
         Dim ts As TimeSpan = stopWatch.Elapsed
-        Return $"{ts.ToString("h:mm")} (since {sincePercent})%)"
 
-
-        'stopWatch.Reset() 'There is also restart.
+        Return $"{ts.ToString("h\:mm")} (since {sincePercent}%)"
     End Function
 
+    ''' <summary>
+    ''' Indicates that a power status change has occurred, and therefore, will update the elapsed time and
+    ''' from what percent that change occurred. For example, battery enters a critical state or when switching
+    ''' between A/C power and battery power.
+    ''' </summary>
+    ''' <param name="sender">The sender of the event</param>
+    ''' <param name="e">Power mode events reported by the operating system</param>
     Private Sub SystemEvents_PowerModeChanged(sender As Object, e As PowerModeChangedEventArgs)
-        'Indicates that another type of power status change has occurred. This power mode is indicated 
-        'when the battery enters a critical state or when switching between A/C power and battery power.
-        If e.Mode = PowerModes.StatusChange Then 'TODO: this method will updated the elapse time from percentage when finished
-            MsgBox("power state changed") 'test code to remove.
+        If e.Mode = PowerModes.StatusChange Then 'TODO: Event fires twice when raised. Build in a fix if this impacts code.
+            sincePercent = GetBatteryPercentage()
+            stopWatch.Restart()
         End If
     End Sub
 

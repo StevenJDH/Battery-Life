@@ -54,6 +54,7 @@ Public Class FrmPopUp
         Dim rate As Integer = myBattery.GetRate
         lblRate.Text = If(Not rate = 0, $"{rate.ToString("N0")} mW", "Not supported")
 
+        lblElapsedTime.Text = myBattery.GetElapsedTime
         lblHealthStatus.Text = myBattery.GetHealthStatus
 
         Dim cycleCount As Integer = myBattery.GetCycleCount
