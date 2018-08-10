@@ -13,12 +13,13 @@ Changelog: [https://github.com/StevenJDH/Battery-Life/wiki/Changelog](https://gi
 * Current and max capacity in mWh
 * Charge and discharge rate in mW
 * Estimated time when battery will be fully discharged
+* Elapsed time since last power state change or application load
 * Health status
 * Cycle count
 * Wear percentage compared against design capacity
 * Alert messages and beeping when the battery is low
-* Some basic configuration to customize how you want the application to work
 * Minimizes windows to ensure you don't miss the alert
+* Some basic configuration to customize how you want the application to work
 
 ## Why am I contributing?
 This is just one of many tools and applications I’ve created over the years for myself that I thought I should share with the public. I am new to GitHub so bear with me while I get adjusted. Hopefully, with community support, some of these applications will grow into something better.
